@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Giám sát cân</title>
+  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+  <style>
+    body {font-family: Arial, Helvetica, sans-serif; margin: 20px;}
+    h1 {color: #2c3e50;}
+    p {font-size: 18px; line-height: 1.4em;}
+    span {font-weight: bold;}
+  </style>
+</head>
+<body>
+  <h1>Giám sát phân loại</h1>
+  <p><b>Khối lượng:</b> <span id="weight">0.000 kg</span></p>
+  <p><b>Phân loại:</b> <span id="cls">---</span></p>
+  <p>Sản phẩm nhẹ: <span id="light">0</span></p>
+  <p>Sản phẩm trung bình: <span id="medium">0</span></p>
+  <p>Sản phẩm nặng: <span id="heavy">0</span></p>
+  <p>Tổng khối lượng: <span id="total">0.000 kg</span></p>
+
+  <script>
+    // bật log Pusher
+    Pusher.logToConsole = true;
+
+    // khởi tạo Pusher với KEY của bạn
+    const pusher = new Pusher('7cf4401ef3e17125dda2', {
+      cluster: 'ap1'
+    });
+
+    // subscribe kênh mà Python gửi
+    const channel = pusher.subscribe('scale-channel');
+
+    // nhận dữ liệu realtime
+    channel.bind('new-result', function(data) {
+      // data là json Python bạn push lên, ví dụ:
+      // {"weight":0.123,"cls":"Nhẹ","light":5,"medium":1,"heavy":0,"total":1.234}
+      document.getElementById("weight").innerText = parseFloat(data.weight).toFixed(3) + " kg";
+      document.getElementById("cls").innerText = data.cls;
+      document.getElementById("light").innerText = data.light;
+      document.getElementById("medium").innerText = data.medium;
+      document.getElementById("heavy").innerText = data.heavy;
+      document.getElementById("total").innerText = parseFloat(data.total).toFixed(3) + " kg";
+    });
+  </script>
+</body>
+</html>
