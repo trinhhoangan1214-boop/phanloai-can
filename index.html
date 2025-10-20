@@ -1,34 +1,19 @@
-@app.route("/")
-def index():
-    return render_template_string("""
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Giám sát phân loại</title>
+<title>Giám sát phân loại sản phẩm</title>
+<script src="https://js.pusher.com/8.2/pusher.min.js"></script>
 <style>
-  body {font-family: Arial; background: #fff; text-align: center;}
-  header {padding: 10px; border-bottom: 2px solid #1E88E5;}
-  header h1 {color: #1E88E5;}
-  .container {display: flex; justify-content: center; margin-top: 20px;}
-  .left, .right {border: 1px solid #ddd; padding: 15px; margin: 5px;}
-  .left h3 {margin: 5px 0; color: #1E88E5;}
-  table {border-collapse: collapse; width: 100%;}
-  td, th {border: 1px solid #ddd; padding: 8px; text-align: left;}
+body{font-family:Arial;text-align:center;background:#fff}
+header{border-bottom:2px solid #1E88E5;margin-bottom:10px}
+h1{color:#1E88E5}
+.container{display:flex;justify-content:center;margin-top:20px}
+.left,.right{border:1px solid #ddd;padding:15px;margin:5px}
+.left h3{margin:5px 0;color:#1E88E5}
+table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #ddd;padding:8px;text-align:left}
 </style>
-<script>
-async function update(){
-    let r = await fetch('/data');
-    let d = await r.json();
-    document.getElementById('weight').textContent = d.weight.toFixed(3) + " g";
-    document.getElementById('cls').textContent = d.cls;
-    document.getElementById('light').textContent = d.light;
-    document.getElementById('medium').textContent = d.medium;
-    document.getElementById('heavy').textContent = d.heavy;
-    document.getElementById('total').textContent = d.total.toFixed(3) + " g";
-}
-setInterval(update, 500);
-</script>
 </head>
 <body>
 <header>
@@ -55,6 +40,24 @@ setInterval(update, 500);
     </table>
   </div>
 </div>
+
+<script>
+  // === Cấu hình Pusher ===
+  Pusher.logToConsole = false;
+  var pusher = new Pusher('7cf4401ef3e17125dda2', {
+    cluster: 'ap1'
+  });
+
+  // === Nhận dữ liệu realtime từ Python ===
+  var channel = pusher.subscribe('scale-channel');
+  channel.bind('new-result', function(data) {
+    document.getElementById('weight').textContent = data.weight.toFixed(3) + " g";
+    document.getElementById('cls').textContent = data.cls;
+    document.getElementById('light').textContent = data.light;
+    document.getElementById('medium').textContent = data.medium;
+    document.getElementById('heavy').textContent = data.heavy;
+    document.getElementById('total').textContent = data.total.toFixed(3) + " g";
+  });
+</script>
 </body>
 </html>
-""")
