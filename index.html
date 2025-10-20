@@ -1,48 +1,60 @@
+@app.route("/")
+def index():
+    return render_template_string("""
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Giám sát cân</title>
-  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-  <style>
-    body {font-family: Arial, Helvetica, sans-serif; margin: 20px;}
-    h1 {color: #2c3e50;}
-    p {font-size: 18px; line-height: 1.4em;}
-    span {font-weight: bold;}
-  </style>
+<meta charset="UTF-8">
+<title>Giám sát phân loại</title>
+<style>
+  body{font-family:Arial;background:#fff;text-align:center}
+  header{padding:10px;border-bottom:2px solid #1E88E5}
+  header h1{color:#1E88E5}
+  .container{display:flex;justify-content:center;margin-top:20px}
+  .left,.right{border:1px solid #ddd;padding:15px;margin:5px}
+  .left h3{margin:5px 0;color:#1E88E5}
+  table{border-collapse:collapse;width:100%}
+  td,th{border:1px solid #ddd;padding:8px;text-align:left}
+</style>
+<script>
+async function update(){
+    let r = await fetch('/data');
+    let d = await r.json();
+    document.getElementById('weight').textContent=d.weight.toFixed(3)+" g";
+    document.getElementById('cls').textContent=d.cls;
+    document.getElementById('light').textContent=d.light;
+    document.getElementById('medium').textContent=d.medium;
+    document.getElementById('heavy').textContent=d.heavy;
+    document.getElementById('total').textContent=d.total.toFixed(3)+" g";
+}
+setInterval(update,500);
+</script>
 </head>
 <body>
-  <h1>Giám sát phân loại</h1>
-  <p><b>Khối lượng:</b> <span id="weight">0.000 kg</span></p>
-  <p><b>Phân loại:</b> <span id="cls">---</span></p>
-  <p>Sản phẩm nhẹ: <span id="light">0</span></p>
-  <p>Sản phẩm trung bình: <span id="medium">0</span></p>
-  <p>Sản phẩm nặng: <span id="heavy">0</span></p>
-  <p>Tổng khối lượng: <span id="total">0.000 kg</span></p>
-
-  <script>
-    // bật log Pusher
-    Pusher.logToConsole = true;
-
-    // khởi tạo Pusher với KEY của bạn
-    const pusher = new Pusher('7cf4401ef3e17125dda2', {
-      cluster: 'ap1'
-    });
-
-    // subscribe kênh mà Python gửi
-    const channel = pusher.subscribe('scale-channel');
-
-    // nhận dữ liệu realtime
-    channel.bind('new-result', function(data) {
-      // data là json Python bạn push lên, ví dụ:
-      // {"weight":0.123,"cls":"Nhẹ","light":5,"medium":1,"heavy":0,"total":1.234}
-      document.getElementById("weight").innerText = parseFloat(data.weight).toFixed(3) + " kg";
-      document.getElementById("cls").innerText = data.cls;
-      document.getElementById("light").innerText = data.light;
-      document.getElementById("medium").innerText = data.medium;
-      document.getElementById("heavy").innerText = data.heavy;
-      document.getElementById("total").innerText = parseFloat(data.total).toFixed(3) + " kg";
-    });
-  </script>
+<header>
+  <h1>TRƯỜNG ĐH KỸ THUẬT - CÔNG NGHỆ CẦN THƠ</h1>
+  <h2>ĐỒ ÁN PHÂN LOẠI SẢN PHẨM</h2>
+</header>
+<div class="container">
+  <div class="left">
+    <h3>Giáo viên hướng dẫn</h3>
+    <p>TS. Đỗ Vinh Quang<br>ThS. Trần Ngọc Liên</p>
+    <h3>Sinh viên thực hiện</h3>
+    <p>Trần Hoài Phúc - 2100497<br>Trịnh Hoàng An - 2101066</p>
+    <h3>Khoa/Ngành</h3>
+    <p>Kỹ Thuật Cơ Khí<br>CNKT Cơ Điện Tử</p>
+  </div>
+  <div class="right">
+    <table>
+      <tr><th>Khối lượng</th><td><span id="weight">0.000 g</span></td></tr>
+      <tr><th>Phân loại</th><td><span id="cls">---</span></td></tr>
+      <tr><th>Sản phẩm nhẹ</th><td><span id="light">0</span></td></tr>
+      <tr><th>Sản phẩm trung bình</th><td><span id="medium">0</span></td></tr>
+      <tr><th>Sản phẩm nặng</th><td><span id="heavy">0</span></td></tr>
+      <tr><th>Tổng khối lượng</th><td><span id="total">0.000 g</span></td></tr>
+    </table>
+  </div>
+</div>
 </body>
 </html>
+""")
