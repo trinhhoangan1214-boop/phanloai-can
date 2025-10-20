@@ -7,27 +7,27 @@ def index():
 <meta charset="UTF-8">
 <title>Giám sát phân loại</title>
 <style>
-  body{font-family:Arial;background:#fff;text-align:center}
-  header{padding:10px;border-bottom:2px solid #1E88E5}
-  header h1{color:#1E88E5}
-  .container{display:flex;justify-content:center;margin-top:20px}
-  .left,.right{border:1px solid #ddd;padding:15px;margin:5px}
-  .left h3{margin:5px 0;color:#1E88E5}
-  table{border-collapse:collapse;width:100%}
-  td,th{border:1px solid #ddd;padding:8px;text-align:left}
+  body {font-family: Arial; background: #fff; text-align: center;}
+  header {padding: 10px; border-bottom: 2px solid #1E88E5;}
+  header h1 {color: #1E88E5;}
+  .container {display: flex; justify-content: center; margin-top: 20px;}
+  .left, .right {border: 1px solid #ddd; padding: 15px; margin: 5px;}
+  .left h3 {margin: 5px 0; color: #1E88E5;}
+  table {border-collapse: collapse; width: 100%;}
+  td, th {border: 1px solid #ddd; padding: 8px; text-align: left;}
 </style>
 <script>
 async function update(){
     let r = await fetch('/data');
     let d = await r.json();
-    document.getElementById('weight').textContent=d.weight.toFixed(3)+" g";
-    document.getElementById('cls').textContent=d.cls;
-    document.getElementById('light').textContent=d.light;
-    document.getElementById('medium').textContent=d.medium;
-    document.getElementById('heavy').textContent=d.heavy;
-    document.getElementById('total').textContent=d.total.toFixed(3)+" g";
+    document.getElementById('weight').textContent = d.weight.toFixed(3) + " g";
+    document.getElementById('cls').textContent = d.cls;
+    document.getElementById('light').textContent = d.light;
+    document.getElementById('medium').textContent = d.medium;
+    document.getElementById('heavy').textContent = d.heavy;
+    document.getElementById('total').textContent = d.total.toFixed(3) + " g";
 }
-setInterval(update,500);
+setInterval(update, 500);
 </script>
 </head>
 <body>
@@ -58,4 +58,3 @@ setInterval(update,500);
 </body>
 </html>
 """)
-
